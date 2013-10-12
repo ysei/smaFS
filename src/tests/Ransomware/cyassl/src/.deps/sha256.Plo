@@ -1,0 +1,1 @@
+sha256.lo: ../ctaocrypt/src/sha256.c

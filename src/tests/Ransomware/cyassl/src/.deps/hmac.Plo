@@ -1,0 +1,36 @@
+hmac.lo: ../ctaocrypt/src/hmac.c ../ctaocrypt/include/hmac.h \
+ ../ctaocrypt/include/md5.h ../ctaocrypt/include/types.h \
+ ../ctaocrypt/include/config.h ../ctaocrypt/include/sha.h \
+ /usr/include/assert.h /usr/include/features.h /usr/include/sys/cdefs.h \
+ /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
+ /usr/include/gnu/stubs-32.h /usr/include/string.h \
+ /usr/lib/gcc/i686-pc-linux-gnu/4.4.0/include/stddef.h \
+ /usr/include/xlocale.h
+
+../ctaocrypt/include/hmac.h:
+
+../ctaocrypt/include/md5.h:
+
+../ctaocrypt/include/types.h:
+
+../ctaocrypt/include/config.h:
+
+../ctaocrypt/include/sha.h:
+
+/usr/include/assert.h:
+
+/usr/include/features.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/bits/wordsize.h:
+
+/usr/include/gnu/stubs.h:
+
+/usr/include/gnu/stubs-32.h:
+
+/usr/include/string.h:
+
+/usr/lib/gcc/i686-pc-linux-gnu/4.4.0/include/stddef.h:
+
+/usr/include/xlocale.h:

@@ -1,0 +1,16 @@
+dump*
+metadata
+.store*
+*.o
+*.out
+*~
+*.swo
+*.swp
+smaFS
+fusexmp
+.store*
+dummy*
+versions
+translate
+
+

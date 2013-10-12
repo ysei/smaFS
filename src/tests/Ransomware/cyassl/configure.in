@@ -1,0 +1,156 @@
+AC_INIT
+AC_CANONICAL_SYSTEM
+AM_INIT_AUTOMAKE(cyassl,1.0.3)
+AM_CONFIG_HEADER(ctaocrypt/include/config.h)
+
+
+dnl Include m4
+sinclude(check_zlib.m4)
+sinclude(lib_socket_nsl.m4)
+sinclude(acx_pthread.m4)
+
+
+# make sure configure doesn't add to CFLAGS
+CFLAGS="$CFLAGS $C_EXTRA_FLAGS"    
+
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_LIBTOOL_WIN32_DLL
+AC_PROG_LIBTOOL
+
+
+AC_C_BIGENDIAN
+
+AC_CHECK_SIZEOF(long, 4)
+AC_CHECK_SIZEOF(long long, 8)
+
+
+OPTIMIZE_CFLAGS=""
+DEBUG_CFLAGS="-g -DDEBUG -DDEBUG_CYASSL"
+
+
+AC_ARG_ENABLE(debug,
+    [  --enable-debug          Enable CyaSSL debugging support (default: disabled)],
+    [ ENABLED_DEBUG=$enableval ],
+    [ ENABLED_DEBUG=no ]
+    )
+if test "$ENABLED_DEBUG" = "yes"
+then
+  # Full debug. Very slow in some cases
+  CFLAGS="$DEBUG_CFLAGS $CFLAGS"
+else
+  # Optimized version. No debug
+  CFLAGS="$OPTIMIZE_CFLAGS $CFLAGS -DNDEBUG"
+fi
+
+
+AC_ARG_ENABLE(small,
+    [  --enable-small          Enable smallest build (default: disabled)],
+    [ ENABLED_SMALL=$enableval ],
+    [ ENABLED_SMALL=no ]
+    )
+if test "$ENABLED_SMALL" = "yes"
+then
+  # make small no tls build with smallest cipher
+  # if you only want server or client you can define NO_CYASSL_SERVER or
+  # NO_CYASSL_CLIENT but then some of the examples and testsuite won't build
+  # note that TLS needs HMAC
+  CFLAGS="-DNO_TLS -DNO_HMAC -DNO_AES -DNO_DES3 -DNO_SHA256 -DNO_ERROR_STRINGS -DNO_HC128 -DNO_RABBIT $CFLAGS"
+fi
+
+
+AC_ARG_ENABLE(singleThreaded,
+    [  --enable-singleThreaded Enable CyaSSL single threaded (default: disabled)],
+    [ ENABLED_SINGLETHREADED=$enableval ],
+    [ ENABLED_SINGLETHREADED=no ]
+    )
+if test "$ENABLED_SINGLETHREADED" = "yes"
+then
+  CFLAGS="-DSINGLE_THREADED $CFLAGS"
+fi
+
+
+AC_ARG_ENABLE(dtls,
+    [  --enable-dtls           Enable CyaSSL DTLS (default: disabled)],
+    [ ENABLED_DTLS=$enableval ],
+    [ ENABLED_DTLS=no ]
+    )
+if test "$ENABLED_DTLS" = "yes"
+then
+  CFLAGS="-DCYASSL_DTLS $CFLAGS"
+fi
+
+
+AC_ARG_ENABLE(opensslExtra,
+    [  --enable-opensslExtra   Enable extra OpenSSL API, size+ (default: disabled)],
+    [ ENABLED_OPENSSLEXTRA=$enableval ],
+    [ ENABLED_OPENSSLEXTRA=no ]
+    )
+if test "$ENABLED_OPENSSLEXTRA" = "yes"
+then
+  CFLAGS="-DOPENSSL_EXTRA $CFLAGS"
+fi
+
+
+if test "$GCC" = "yes"
+then
+    if test "$ENABLED_DEBUG" = "no"
+    then
+        CFLAGS="$CFLAGS -Os -fomit-frame-pointer"
+    fi
+fi
+
+
+AC_ARG_ENABLE(ipv6,
+    [  --enable-ipv6           Enable testing of IPV6 (default: disabled)],
+    [ ENABLED_IPV6=$enableval ],
+    [ ENABLED_IPV6=no ]
+    )
+
+if test "$ENABLED_IPV6" = "yes"
+then
+    CFLAGS="$CFLAGS -DTEST_IPV6"
+fi
+
+
+AC_ARG_ENABLE(fastmath,
+    [  --enable-fastmath       Enable fast math for BigInts(default: disabled)],
+    [ ENABLED_FASTMATH=$enableval ],
+    [ ENABLED_FASTMATH=no ]
+    )
+
+if test "$ENABLED_FASTMATH" = "yes"
+then
+    CFLAGS="$CFLAGS -DUSE_FAST_MATH"
+fi
+
+
+
+CHECK_ZLIB
+
+ACX_PTHREAD
+
+LIBS="$PTHREAD_LIBS $LIBS"
+CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+
+LIB_SOCKET_NSL
+
+AC_SUBST(CFLAGS)
+AC_SUBST(LIBS)
+
+
+
+AC_CONFIG_FILES(Makefile dnl
+        ctaocrypt/Makefile dnl
+        ctaocrypt/src/Makefile dnl
+        ctaocrypt/test/Makefile dnl
+        ctaocrypt/benchmark/Makefile dnl
+        src/Makefile dnl
+        examples/Makefile dnl
+        examples/client/Makefile dnl
+        examples/server/Makefile dnl
+        examples/echoclient/Makefile dnl
+        examples/echoserver/Makefile dnl
+        testsuite/Makefile)
+AC_OUTPUT
+

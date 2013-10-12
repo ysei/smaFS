@@ -1,0 +1,2 @@
+export CFLAGS="-DNO_DH -DNO_AES -DNO_SHA256 -DNO_ERROR_STRINGS -DNO_MAIN_DRIVER"
+./configure --disable-shared; make -j3

@@ -1,0 +1,26 @@
+mp=/home/dsk/mntpnt
+
+smaFS:	smaFS.c metadata.cpp translate.c restart.c versions.cpp
+	#cscope -b
+	g++ -Wall -pedantic -std=gnu++0x -DDEBUG `pkg-config fuse --cflags --libs` smaFS.c metadata.cpp restart.c translate.c hashlib/hashlib.c ziplib/ziplib.c ziplib/minilzo.c -o smaFS
+	g++ -g -Wall -pedantic -std=gnu++0x -Dmetadata_DEBUG -DDEBUG `pkg-config fuse --cflags --libs` restart.c metadata.cpp hashlib/hashlib.c ziplib/ziplib.c ziplib/minilzo.c -o metadata
+	g++ -g -Wall -pedantic -std=gnu++0x -Dtranslate_DEBUG -DDEBUG `pkg-config fuse --cflags --libs` translate.c metadata.cpp hashlib/hashlib.c restart.c -o translate
+	#g++ -g -Wall -pedantic -std=gnu++0x -DDEBUG versions.cpp -o versions
+	g++ -g -Wall -pedantic -std=gnu++0x versions.cpp -o versions
+clean:  
+	rm -f *.o smaFS a.out cscope.out db fusexmp translate metadata
+	rm -rf /tmp/.store
+test:  smaFS
+	echo $(mp)
+	exit
+	
+	mkdir -p $(mp)
+	./smaFS $(mp) -d -f &
+	sleep 1
+	cd $(mp)/tmp; touch x y z; echo "test" > test.txt; echo "test test" > test.txt; cat test.txt#1
+	sync
+	sleep 1
+	fusermount -u $(mp)
+	sudo dmesg -c
+
+

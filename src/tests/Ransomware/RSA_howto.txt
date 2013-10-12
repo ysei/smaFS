@@ -1,0 +1,32 @@
+Generate new 1024 bit RSA private key :
+
+openssl genrsa -out private.pem 1024
+
+Extract public key from private key and write out using DER output format :
+
+openssl rsa -in private.pem -out public.der -outform DER -pubout
+
+Use for testing RSA :
+
+openssl rsa -in private.pem -out public.der -outform DER 
+
+For test purposes, format key data so it can be stuck in a program :
+
+cat public.der | xxd -i
+
+Use the "-text" argument to OpenSSL to see the components of the key :
+
+openssl rsa -in private.pem -out public.der -outform DER -pubout -text
+
+
+
+
+A PEM is basically a base64 encoded DER with a header and footer.
+
+openssl rsa -inform pem -in rsa.key -text
+
+openssl rsa -inform pem -in rsa.key -text -modulus | grep Modulus
+
+
+
+
